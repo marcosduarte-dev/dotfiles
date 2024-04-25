@@ -17,8 +17,3 @@ local opts = {}
 require("vim-options")
 require("lazy").setup("plugins")
 
--- Configuracao Treesitter
-
--- Abrindo neo-tree - Gerenciador de arquivos
-
-
