@@ -18,11 +18,28 @@ return {
     config = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       local lspconfig = require("lspconfig")
+
+      local util = require 'lspconfig/util'
+
+      local function get_probe_dir(root_dir)
+        local project_root = util.find_node_modules_ancestor(root_dir)
+
+        return project_root and (project_root .. '/node_modules') or ''
+      end
+
+      local default_probe_dir = get_probe_dir(vim.fn.getcwd())
+
+      local cmd = {"ngserver", "--stdio", "--tsProbeLocations", default_probe_dir, "--ngProbeLocations", default_probe_dir}
+
       lspconfig.lua_ls.setup({
         capabilities = capabilities 
       })
       lspconfig.angularls.setup({
         capabilities = capabilities,
+        cmd = cmd,
+        on_new_config = function(new_config,new_root_dir)
+          new_config.cmd = cmd
+        end,
       })
       lspconfig.clangd.setup({
         capabilities = capabilities,
